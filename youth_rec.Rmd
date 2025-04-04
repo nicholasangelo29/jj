@@ -1,0 +1,160 @@
+---
+title: "A Systematic Review of the Research Literature on Youth Recidivism in Education"
+author: 
+  - "Nicholas Angelo"
+  - "Howard University"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true  # Enable floating TOC in the sidebar
+    number_sections: true
+    theme: cerulean
+    always_allow_html: true
+    self_contained: true
+editor_options:
+  chunk_output_type: console
+  markdown:
+    wrap: sentence
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(
+  echo = TRUE, # By default, hide code; set to TRUE to see code
+  fig.pos = 'th', # Places figures at top or here
+  out.width = '100%', dpi = 300, # Figure resolution and size
+  fig.env="figure"
+) # Latex figure environment
+
+options(knitr.table.format = "latex") # For kable tables to write LaTeX table directly
+```
+
+# Libraries and packages
+
+```{r, message=F, warning=F}
+## set up, load libraries
+library(dplyr)
+library(readtext)
+library(tidyverse)
+library(here)
+library(gt)
+library(ggplot2)
+library(dplyr)
+library(knitr)
+library(readr)
+library(kableExtra)
+library(bibliometrix)
+library(tidyverse)
+library(DiagrammeR)
+library(DiagrammeRsvg)
+library(rsvg)
+library(quanteda)
+library(stringr)
+library(tidytext)
+library("quanteda.textmodels")
+library("quanteda.textstats")
+library("quanteda.textplots")
+require(quanteda.corpora)
+here::i_am("youth_rec.Rmd")
+```
+
+# LITERATURE REVIEW
+
+In this section, we provide a summary of our scoping process in the preparation of the systematic literature review.
+
+# RESEARCH QUESTIONS
+
+1.  What is the intellectual and conceptual structure of research on ...?
+
+# METHOD
+
+| Code | Criteria                                                                     |
+|-------------------|-----------------------------------------------------|
+| IC1  | Article contains keywords in the title (TI) or abstract (AB)                 |
+| IC2  | Article published between 2015 and 2024                                      |
+| IC3  | Article originally written in English                                        |
+| IC4  | Article is a journal article                                                 |
+| IC5  | Article purpose or core questions center on the topical subjects of analysis |
+
+: Inclusion and exclusion criteria for the study
+
+## Scoping
+
+TBD
+
+## Review
+
+Key Columns of Interest:
+
+-   AU: Authors of the publication
+
+-   AB: Abstract text
+
+-   TI: Title of the publication
+
+-   AU_CO: Countries of the authors
+
+-   SC: Subject categories (e.g., "Education & Educational Research")
+
+-   PY: Publication year
+
+-   TC: Total citations
+
+## Reduction
+
+TBD
+
+# ANALYTIC FRAMEWORK
+
+```{r, echo=F, include=T}
+# Create the framework
+tmp = DiagrammeR::grViz('digraph model {
+
+    graph [layout = dot, overlap = true]
+    
+    node [shape=box]
+    {"Scoping"} -> {"Review"} -> {"Reduction"};
+ 
+    node [shape=box]
+    {"Patterns = 6"} -> {"Sources = TDB"} -> docs;
+    
+    node [shape=box]
+    docs [label=<Documents, n = TBD>];
+    
+# `edge` statements
+ 
+    edge [minlen = 2]
+    docs -> {"Concepts" -> Themes}
+
+ }') 
+
+# Display the graph
+tmp
+
+# Export to SVG
+tmp_svg = DiagrammeRsvg::export_svg(tmp)
+
+# Convert SVG to raw vector
+tmp_raw = charToRaw(tmp_svg)
+
+```
+
+# DATA
+
+Loading the text file.
+
+```{r, message=F, warning=F}
+data <- readtext("savedrecs-2.txt") # Load the data
+M <- convert2df(file=data, dbsource= "wos", format= "plaintext")
+dim(M)
+
+# create an object of the study results
+results <- biblioAnalysis(M, sep = ";") # entire data set
+
+options(width=100)
+S <- summary(object = results, k = 10, pause = F)
+```
+
+```{r, message=F, warning=F}
+
+```
