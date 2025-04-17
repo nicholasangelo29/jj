@@ -68,16 +68,14 @@ pagedown::chrome_print("poster-template.Rmd")
 
 # Abstract
 
-We investigate racial disparities in U.S. incarceration rates and capital punishment to highlight systemic inequities within the criminal justice system. Our hypotheses align with research literature and historical data, indicating that Black Americans are incarcerated at disproportionately higher rates than other groups; we take a particular focus on southern states. We also examine racial bias in the administration of the death penalty, specifically analyzing data on Black defendants. By utilizing multiple sources of state-level data, we aim to uncover how race influences patterns of incarceration and sentencing, emphasizing the need for reforms to address persistent inequities and promote fairness in the justice system.
-
 # Overview
-
-This is some sample text.
 
 
 # Method
 
-We explore the research literature relating to issues of youth recidivism in education. The focus of t
+We explore the research literature relating to issues of youth recidivism in education.
+
+Keywords used in analysis: keyword1, keyword2, keyword3
 
 ## Data
 
@@ -120,6 +118,8 @@ The main information about the study data.
 kable(S[2])
 ```
 
+## Publications by Year
+
 ```{r, include=F, message=F, warning=F}
 counts <- M %>%
   group_by(PY) %>%
@@ -158,12 +158,42 @@ kable(S[9]) # Main sources (journals)
 ## Keywords
 
 ```{r}
+#| echo: false
 #| results: show
 #| warning: false
 
 kable(S[10]) # Author Keywords and Keywords-Plus
 
 ```
+
+## Most frequently cited documents
+
+```{r}
+#| results: show
+#| echo: false
+#| warning: false
+# Most frequently cited documents in the collection
+CR <- citations(M, field = "article", sep = ";")
+kable(cbind(CR$Cited[1:21]))
+```
+
+## Most productive countries
+
+```{r}
+#| results: show
+#| warning: false
+kable(S[7])# Most productive countries
+
+```
+
+## Thematic Map and Frequency Analysis
+
+```{r, echo=F}
+Map1=thematicMap(M, field = "ID", n = 250, minfreq = 10,
+  stemming = FALSE, size = 0.4, n.labels=5, repel = TRUE)
+plot(Map1$map)
+```
+
 
 # Discussion
 
