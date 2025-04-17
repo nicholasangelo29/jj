@@ -1,16 +1,14 @@
 ---
-title: "Examining Racial Disparities in U.S. Incarceration and Capital Punishment"
+title: "A Pilot Review of the Research Literature on Youth Recidivism in Education"
 author: 
-  - name: Zoe Williams
+  - name: Nicholas Angelo
     affil: 1
   - name:  Nathan Alexander, PhD
-    affil: 2, 3
+    affil: 1, 2
 affiliation:
   - num: 1
-    address: Department of Political Science, College of Arts and Sciences
-  - num: 2
     address: Department of Curriculum and Instruction, School of Education
-  - num: 3
+  - num: 2
     address: Program in Applied Data Science and Analytics, The Graduate School
 column_numbers: 3
 logoright_name: img/qs-logo.png
@@ -39,10 +37,27 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("pak")
 #install.packages("posterdown")
 pak::pak('rstudio/pagedown')
-library(readr)
 library(dplyr)
+library(readtext)
 library(tidyverse)
+library(gt)
 library(ggplot2)
+library(dplyr)
+library(knitr)
+library(readr)
+library(kableExtra)
+library(bibliometrix)
+library(tidyverse)
+library(DiagrammeR)
+library(DiagrammeRsvg)
+library(rsvg)
+library(quanteda)
+library(stringr)
+library(tidytext)
+library("quanteda.textmodels")
+library("quanteda.textstats")
+library("quanteda.textplots")
+require(quanteda.corpora)
 library(here)
 here::i_am("poster-template.Rmd")
 ```
@@ -59,25 +74,22 @@ We investigate racial disparities in U.S. incarceration rates and capital punish
 
 This is some sample text.
 
-# Literature Review
 
-This is some sample text.
+# Method
 
-I am adding a citation @bohm2016deathquest.
-
-# Research Questions
-
-1.  This is research question 1.
-
-2.  This is research question 2.
-
-# Methodology
-
-This is some sample text.
+We explore the research literature relating to issues of youth recidivism in education. The focus of t
 
 ## Data
 
-This is some more sample text.
+| Code | Criteria                                                                     |
+|-------------------|-----------------------------------------------------|
+| IC1  | Article contains study keywords in the title (TI) or abstract (AB)                 |
+| IC2  | Article published between 2015 and 2024                                      |
+| IC3  | Article originally written in English                                        |
+| IC4  | Article is a journal article                                                 |
+| IC5  | Article purpose or core questions center on the topical subjects of analysis |
+
+: Inclusion and exclusion criteria for the study
 
 ## Analytic framework
 
@@ -85,31 +97,73 @@ This is some more sample text.
 
 # Findings
 
-These are the findings.
+```{r, include=F, message=F, warning=F}
+data <- readtext("savedrecs-2.txt") # Load the data
 
-Here is finding 1.
 
-Here is finding 2.
+M <- convert2df(file=data, dbsource= "wos", format= "plaintext")
+dim(M)
+M <- M  %>% 
+  filter(PY > 2013) %>% 
+  filter(PY < 2024)
 
-```{r, include=F, warning=F, messages=F}
-sentences <- read.csv("../data/sentences.csv")
+# create an object of the study results
+results <- biblioAnalysis(M, sep = ";") # entire data set
 
-yearly <- yearly_counts <- sentences %>%
-  group_by(Year) %>%
-  summarise(Count = n())
+options(width=100)
+S <- summary(object = results, k = 10, pause = F)
 ```
 
-```{r, echo=F, warning=F, messages=F}
-ggplot(yearly_counts, aes(x = Year, y = Count)) +
-  geom_line(color = "blue") +
-  geom_point(color = "red") +
-  labs(title = "Trend of Sentences Over Time", x = "Year", y = "Count") +
-  theme_minimal()
+The main information about the study data.
+
+```{r, echo=F, message=F, warning=F}
+kable(S[2])
 ```
 
-Here is finding 3.
+```{r, include=F, message=F, warning=F}
+counts <- M %>%
+  group_by(PY) %>%
+  summarise(count = n())
+```
 
-Here is finding 4.
+```{r, include=F, message=F, warning=F}
+year_plot <- ggplot() + 
+  geom_col(data = counts, 
+           aes(x = PY, y = count), width = 0.4) +
+  theme_minimal() +
+  labs(x = "Year", y = "Count", 
+       title = "Publications over Time") +
+  scale_x_continuous(breaks = seq(min(counts$PY), max(counts$PY), by = 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.title = element_blank(),
+        legend.position = "top") 
+print(year_plot)
+
+# Save the plot as a high-resolution PNG
+ggsave("img/year_plot.png", plot = year_plot, width = 10, height = 8, units = "in", dpi = 300, bg = "white")
+```
+
+![](img/year_plot.png){width=90%}
+
+## Main Sources
+
+```{r}
+#| results: show
+#| warning: false
+
+kable(S[9]) # Main sources (journals)
+
+```
+
+## Keywords
+
+```{r}
+#| results: show
+#| warning: false
+
+kable(S[10]) # Author Keywords and Keywords-Plus
+
+```
 
 # Discussion
 
